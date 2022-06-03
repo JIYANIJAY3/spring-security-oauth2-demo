@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.net.URI;
 
@@ -28,14 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Login()
                 .defaultSuccessUrl("/home")
                 .and()
-                .logout().clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-
-                .permitAll()
-                .and()
-                .oauth2Login()
-                .userInfoEndpoint()
-                ;
+                .logout().invalidateHttpSession(true)
+                .clearAuthentication(true).
+                logoutSuccessUrl("/local").
+                deleteCookies("JSESSIONID").
+                permitAll().
+                and().
+                csrf().
+                csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());;
     }
 }
